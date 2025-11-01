@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      PYTHONPATH: "${{ github.workspace }}/src/predictions/config"
+      PYTHONPATH: "${{ github.workspace }}/src"
 
     steps:
       # 1️⃣ Checkout repo
@@ -38,7 +38,7 @@ jobs:
       # 4️⃣ Run tests
       - name: Run pytest
         run: |
-          export PYTHONPATH=$PYTHONPATH:${{ github.workspace }}/src
+          export PYTHONPATH=$PYTHONPATH:${{ github.workspace }}/src/predictions/config
           pytest -v --disable-warnings --maxfail=1
 
       # 5️⃣ Build Docker image
