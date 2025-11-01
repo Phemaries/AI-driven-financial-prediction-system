@@ -42,6 +42,7 @@ jobs:
           pytest -v --disable-warnings --maxfail=1
 
       # 5️⃣ Build Docker image
-      - name: Build Docker image
+      - name: Build and run Docker Compose
         run: |
-          docker build -t stock-prediction-app:latest .
+          docker compose build
+          docker compose up -d
