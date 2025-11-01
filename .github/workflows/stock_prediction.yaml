@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      PYTHONPATH: "${{ github.workspace }}/src"
+      PYTHONPATH: "${{ github.workspace }}/src/predictions/config"
 
     steps:
       # 1️⃣ Checkout repo
