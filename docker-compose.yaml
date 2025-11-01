@@ -1,0 +1,52 @@
+# version: "3.8"
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    networks:
+      - prefect-network
+
+  prefect-server:
+    build:
+      context: .
+      dockerfile: prefect.dockerfile
+    # restart: always
+    depends_on:
+      - postgres
+    ports:
+      - "${PREFECT_PORT}:4200"
+    environment:
+      PREFECT_LOGGING_LEVEL: ${PREFECT_LOGGING_LEVEL}
+      PREFECT_API_DATABASE_CONNECTION_URL: postgresql+asyncpg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+    networks:
+      - prefect-network
+
+  flask-app:
+    build:
+      context: .
+      dockerfile: flask.dockerfile
+    restart: always
+    depends_on:
+      - prefect-server
+    ports:
+      - "${FLASK_PORT}:8000"
+    environment:
+      PREFECT_API_URL: ${PREFECT_API_URL}
+    networks:
+      - prefect-network
+
+networks:
+  prefect-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
